@@ -113,7 +113,12 @@ class MyHOMEGatewayHandler:
 
     @property
     def manufacturer(self) -> str:
-        return self.gateway.manufacturer
+        manufacturer = self.gateway.manufacturer
+        # SSDP can report the manufacturer as a list; the device registry needs a string
+        # (a list stops being accepted in Home Assistant 2026.12).
+        if isinstance(manufacturer, (list, tuple)):
+            manufacturer = manufacturer[0] if manufacturer else None
+        return manufacturer
 
     @property
     def name(self) -> str:
